@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <GraphQL Remove="shared\todos\listtodo\OnTodoItemCreated.graphql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="GetTodoItems.graphql" />
+    <None Remove="Pages\Todos\Details\GetTodoItem.graphql" />
+    <None Remove="Shared\Todos\AddTodo\CreateTodoItem.graphql" />
+    <None Remove="Shared\Todos\ClearTodo\PurgeTodoItems.graphql" />
+    <None Remove="Shared\Todos\CompleteTodoItem.graphql" />
+    <None Remove="Shared\Todos\DeleteTodoItem.graphql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="StrawberryShake.Blazor" Version="14.0.0-p.15" />
+    <PackageReference Include="MudBlazor" Version="6.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" />
+  </ItemGroup>
+</Project>

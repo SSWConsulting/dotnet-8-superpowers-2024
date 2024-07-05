@@ -1,0 +1,156 @@
+﻿@using JusticeVoter.Client.Models
+@using JusticeVoter.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+@inject HeroService heroClient
+
+<h1>Vote for your favourite @HeroName</h1>
+
+@if (heroes is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    if (voted)
+    {
+        <p>Thank you! Your vote counts!</p>
+    }
+    else
+    {
+        <CardDeck>
+            @foreach (var hero in heroes)
+            {
+                <Card @onclick="() => VoteHero(hero.Id)" Class="heroCard">
+                    <CardImage Source=@hero.ImageSource Alt=@hero.ActorName></CardImage>
+                    <CardBody>
+                        <CardText><span class="heroTitle">@hero.ActorName</span></CardText>
+                        <CardText Size="3">@hero.Context</CardText>
+                        <CardText Size="3">@hero.Year</CardText>
+                    </CardBody>
+                </Card>
+            }
+        </CardDeck>
+    }
+}
+
+<div class="chart">
+    <BarChart @ref="barChart" Type="ChartType.Bar" TItem="int" />
+</div>
+
+@code {
+
+    [Parameter]
+    public string HeroName { get; set; } = string.Empty;
+
+    HubConnection hub = default!;
+
+    bool voted = false;
+
+    Hero[]? heroes = [];
+    List<VoteCount> Votes { get; set; } = new();
+    BarChart<int> barChart = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshHeroes();
+
+        hub = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/vote"))
+            .Build();
+
+        hub.On("Refresh", async () =>
+        {
+            await RefreshVotes();
+            StateHasChanged();
+        });
+
+        hub.On<Vote>("Vote", async (vote) =>
+        {
+            Console.WriteLine($"Got vote from hub: {vote.HeroName}, {vote.Id}");
+            if (vote.HeroName == HeroName)
+            {
+                await RefreshVotes();
+                StateHasChanged();
+            }
+        });
+
+        await hub.StartAsync();
+    }
+
+    async Task RefreshHeroes()
+    {
+        heroes = await heroClient.GetHeroes(HeroName);
+
+        if (heroes is not null)
+        {
+            foreach (var hero in heroes)
+            {
+                Votes.Add(new VoteCount
+                    {
+                        ActorId = hero.Id,
+                        ActorName = hero.ActorName,
+                        Count = 0
+                    });
+            }
+        }
+    }
+
+    async Task RefreshVotes()
+    {
+        if (heroes is not null)
+        {
+            foreach (var hero in heroes)
+            {
+                int votes = await heroClient.GetHeroVoteTally(hero.Id);
+                Votes.Where(v => v.ActorId == hero.Id).First().Count = votes;
+            }
+        }
+
+        await RefreshChart();
+    }
+
+    async Task VoteHero(int id)
+    {
+        Console.WriteLine($"voted for {id}");
+
+        var vote = new Vote
+            {
+                Id = id,
+                HeroName = HeroName
+            };
+
+        await hub.SendAsync("SendVote", vote);
+
+        await RefreshVotes();
+
+        voted = true;
+    }
+
+    List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.5f), ChartColor.FromRgba(54, 162, 235, 0.5f), ChartColor.FromRgba(255, 206, 86, 0.5f), ChartColor.FromRgba(75, 192, 192, 0.5f), ChartColor.FromRgba(153, 102, 255, 0.5f), ChartColor.FromRgba(255, 159, 64, 0.5f) };
+    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+
+    async Task RefreshChart()
+    {
+        var chartLabels = Votes.Select(v => v.ActorName).ToList();
+        var chartValues = Votes.Select(v => v.Count).ToList();
+
+        BarChartDataset<int> data = new BarChartDataset<int>
+            {
+                Label = "Votes",
+                Data = chartValues,
+                BackgroundColor = backgroundColors,
+                BorderColor = borderColors
+            };
+
+        var dataSets = new List<BarChartDataset<int>>() { data };
+
+        await barChart.Clear();
+        await barChart.AddLabelsDatasetsAndUpdate(chartLabels.ToArray(), dataSets.ToArray());
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await hub.DisposeAsync();
+    }
+}

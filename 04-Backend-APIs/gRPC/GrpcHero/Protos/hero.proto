@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcHero";
+
+import "google/api/annotations.proto";
+
+package hero;
+
+// The hero greeting service definition.
+service Hero {
+  
+  // Sends a hero's greeting to a user
+  rpc SayHello (HelloRequest) returns (HelloReply) {
+	  option (google.api.http) = {
+        get: "/v1/hero/{name}"
+    };
+  }
+
+  // Sends a stream of hero's greetings to a user
+  rpc SayHelloStream (HelloStreamRequest) returns (stream HelloReply) {
+	  option (google.api.http) = {
+        post: "/v1/hero"
+        body: "*"
+    };
+  }
+}
+
+// The request message containing the fan's name.
+message HelloRequest {
+  // Your name
+  string name = 1;
+}
+
+// The request message containing the fan's name and number of greetings.
+message HelloStreamRequest {
+  // Your name
+  string name = 1;
+  // Number of greetings
+  int32 count = 2;
+}
+
+// The response message containing the Hero's reply.
+message HelloReply {
+  // Hero's reply
+  string message = 1;
+}

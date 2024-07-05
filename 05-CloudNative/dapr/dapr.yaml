@@ -1,0 +1,20 @@
+version: 1
+common: # optional section for variables shared across apps
+  resourcesPath: ./DaprComponents # any dapr resources to be shared across apps
+  appLogDestination: fileAndConsole # (optional), can be file, console or fileAndConsole. default is fileAndConsole.
+  daprdLogDestination: file # (optional), can be file, console or fileAndConsole. default is file.
+  appSSL: true
+  env:  # any environment variable shared across apps
+    DEBUG: true
+apps:
+  - appID: save-me-api
+    appDirPath: ./SaveMe/
+    appPort: 7150
+    daprHTTPPort: 3500
+    command: ["dotnet", "run", "SaveMe.csproj", "-lp", "https"]
+  - appID: save-me-listener-api
+    appDirPath: ./SaveMeListener/
+    appPort: 7264
+    daprHTTPPort: 3501
+    command: ["dotnet", "run", "SaveMeListener.csproj", "-lp", "https"]
+  
