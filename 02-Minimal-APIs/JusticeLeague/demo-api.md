@@ -356,6 +356,7 @@ We've got a bit of duplication going on at the moment and our minimal APIs aren'
     });
 
     ```
+
 1. Update the Url above with the URL from the web project
 
 1. Configure the route for our identity endpoints

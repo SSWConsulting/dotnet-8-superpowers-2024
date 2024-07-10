@@ -20,14 +20,14 @@
     ```bash
     dotnet new console 
     ```
-   
+
 1. Add the console to our solution
 
     ```bash
     cd ..
     dotnet sln add .\JusticeLeague.Client
     ```
-   
+
 1. Add the Kiota nuget packages
 
     ```bash
@@ -38,7 +38,7 @@
     dotnet add package Microsoft.Kiota.Serialization.Text
     dotnet add package Microsoft.Kiota.Serialization.Multipart
     ```
-   
+
 ## Generate Client Code
 
 1. Generate the full client code using Kiota
@@ -49,13 +49,12 @@
 
     See how much code is generated
 
-
 1. Generate the client code using Kiota CLI
 
     ```bash
     dotnet kiota generate --include-path **/heroes --include-path **/login --include-path **/register -l CSharp -c HeroesClient -n JusticeLeague.Client --openapi "..\JusticeLeague.Api\wwwroot\swagger.json" -o ./Client --clean-output
     ```
-   
+
     Now look at the code generated and see the size difference
 
 1. Add the .net microsoft host nuget package
@@ -88,7 +87,7 @@
         public required string Password { get; init; }
     }
     ```
- 
+
 ## Authentication
   
    We'll use this to store the configuration for out API
@@ -118,6 +117,7 @@
         public AllowedHostsValidator AllowedHostsValidator { get; } = new();
     }
     ```
+
 1. Create an enum for different client types
 
     ```csharp
@@ -144,7 +144,7 @@
         return new HeroesClient(adapter);
     });
     ```
-   
+
 1. Register a secure client
 
     ```csharp
@@ -166,13 +166,13 @@
         .ValidateDataAnnotations()
         ;
     ```
-   
+
 1. Install the options validation package
 
     ```csharp
     dotnet add package Microsoft.Extensions.Options.DataAnnotations
     ```
-   
+
 1. Build and start our app
 
     ```csharp
@@ -193,7 +193,7 @@
     {
       "Api": {
         "Url": "http://localhost:7140/",
-        "UserName": "dan@ssw.com",
+        "UserName": "gert@ssw.com",
         "Password": "Password1?"
       }
     }
@@ -215,8 +215,8 @@
         Email = apiConfig.Value.UserName, Password = apiConfig.Value.Password
     });
     ```
-   
-2. Call our secure API
+
+1. Call our secure API
 
     ```csharp
     var secureClient = app.Services.GetRequiredKeyedService<HeroesClient>(HeroClientTypes.Secure);
@@ -231,6 +231,6 @@
 
 1. Start both applications at the same time and debug to ensure everything works
 
-# TODO
+> TODO
 
 - Finish the demo
