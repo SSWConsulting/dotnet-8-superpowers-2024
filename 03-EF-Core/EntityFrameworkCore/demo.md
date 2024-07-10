@@ -1,5 +1,18 @@
 # Entity Framework Core 8
 
+Complex Types 
+- complex types (also known as owned types) are used to represent value objects that do not have their own identity but are defined as part of another entity.
+
+Unmapped Types 
+- Raw SQL Queries: When you need to execute raw SQL queries that return types not directly mapped to an entity.
+- Stored Procedures: When using stored procedures that return results not easily mapped to existing entities.
+- Ad Hoc Projections: When projecting results into types that are not part of the EF Core model.
+
+Bulk Update and Delete
+- Let's say you wanted to run a bulk update on a table.  In EF Core 7, we could do that but were limited to a single entity.  However, now in EF Core 8, we can do updates across multiple structures (however, they still need to live in the same table).
+
+Primitive collections - Now as our heroes are getting more active, we want to store the date every time they save the city (instead of just the last date).  One option is to create another table to store this data, but that's a lot of work.  Instead, we can use a primitive collection.
+
 ## Setup
 
 ```bash
