@@ -21,47 +21,13 @@ public class EfCoreTests
         _db.Heroes.AddRange(data);
         _db.SaveChanges();
     }
-
+    
     [Fact]
     public void Query_Heroes()
     {
         var heroes = _db.Heroes
             .Include(i => i.Affiliation)
             .Include(i => i.HeroPowers)
-            .ToList();
-    }
-
-    [Fact]
-    public void Query_With_Unmapped_Types()
-    {
-        var heroName = "Superman";
-        FormattableString sql =
-            $"""
-             SELECT HeroId, Name, Alias
-             FROM Heroes
-             WHERE Name = {heroName}
-             """;
-        var heroNames = _db.Database.SqlQuery<HeroName>(sql).ToList();
-    }
-
-    [Fact]
-    public void Bulk_Update_With_Nested_Types()
-    {
-        _db.Heroes.ExecuteUpdate(s => s.SetProperty(h => h.SecretHideout.City, "Metropolis"));
-    }
-
-    [Fact]
-    public void Query_Primitive_Collection()
-    {
-        var heroes = _db.Heroes.Where(h => h.SavedTheCityDates.Contains(new DateOnly(2000, 01, 01))).ToList();
-    }
-
-    [Fact]
-    public void Query_Json_Array()
-    {
-        var superpowers = _db.Heroes
-            .AsNoTracking()
-            .SelectMany(h => h.HeroPowers.Where(hp => hp.Name.Contains("Super")))
             .ToList();
     }
 }

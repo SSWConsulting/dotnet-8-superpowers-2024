@@ -59,11 +59,14 @@ public class HeroDbContext : DbContext
     {
         optionsBuilder
             .UseSqlServer(
-                @"Server=.\SQL2022;Database=EfCore8Demo;Trusted_Connection=True;TrustServerCertificate=True;");
+                "Server=localhost,1433;Database=NETSuper8;User ID=sa;Password=31MySqlServer#;Encrypt=False;");
+
+            // optionsBuilder.LogTo(System.Console.WriteLine, new[] { RelationalEventId.CommandExecuted });
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+       
     }
 }
 ```

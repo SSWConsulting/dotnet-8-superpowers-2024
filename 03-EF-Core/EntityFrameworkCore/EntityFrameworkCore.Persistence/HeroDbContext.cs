@@ -11,16 +11,13 @@ public class HeroDbContext : DbContext
     {
         optionsBuilder
             .UseSqlServer(
-                @"Server=.\SQL2022;Database=EfCore8Demo;Trusted_Connection=True;TrustServerCertificate=True;");
+                "Server=localhost,1433;Database=EfCore8Demo;User ID=sa;Password=31MySqlServer#;Encrypt=False;");
 
-        optionsBuilder.LogTo(System.Console.WriteLine, new[] { RelationalEventId.CommandExecuted });
+            // optionsBuilder.LogTo(System.Console.WriteLine, new[] { RelationalEventId.CommandExecuted });
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var entity = modelBuilder.Entity<Hero>();
-        entity.ComplexProperty(e => e.SecretHideout);
-
-        //entity.OwnsMany(e => e.HeroPowers, builder => builder.ToJson());
+       
     }
 }

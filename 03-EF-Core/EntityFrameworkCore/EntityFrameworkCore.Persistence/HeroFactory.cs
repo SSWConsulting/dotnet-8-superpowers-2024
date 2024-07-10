@@ -20,11 +20,6 @@ public static class HeroFactory
                     PowersFactory.SuperSpeed,
                     PowersFactory.SuperHearing,
                     PowersFactory.Invulnerability
-                ],
-                SavedTheCityDates =  [
-                    new DateOnly(2000, 01, 01),
-                    new DateOnly(2000, 02, 02),
-                    new DateOnly(2000, 03, 03),
                 ]
             },
             new()
@@ -38,13 +33,7 @@ public static class HeroFactory
                     PowersFactory.MartialArts,
                     PowersFactory.Intelligence,
                     PowersFactory.Gadgets
-                ],
-                SecretHideout = new SecretHideout
-                {
-                    Street = "Bat Cave",
-                    City = "Gotham",
-                    Country = "USA"
-                }
+                ]
             },
             new()
             {
