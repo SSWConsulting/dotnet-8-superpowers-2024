@@ -32,7 +32,14 @@ dotnet sln add .\CSharp12
 
 ## Records
 
-Create a person record
+Create a person record - who has used records? default is a class record but can also be a struct record,
+haS properties
+
+- compiler generates a special kind of class
+- fields will by default be public properties
+
+- value based semantics - if I have 2 records with the same values and I compare them, c# will say they are the same. If I had 2 classes, they won't
+- immutability - once created can't change values
 
 ```csharp
 record Person(string FirstName, string LastName);
@@ -41,7 +48,7 @@ record Person(string FirstName, string LastName);
 create a new person
 
 ```csharp
-var p1 = new Person("Daniel", "Mackay");
+var p1 = new Person("Gert", "Marx");
 ```
 
 Records are immutable and the following will not work
@@ -67,7 +74,7 @@ if (p1 == doppleGanger)
  
 ```
 
-## Required and Init Properties
+## Required and Init Properties - code more robust
 
 Create the following class
 
@@ -109,7 +116,7 @@ Now we have a nicely constructed object that is guaranteed to have a value for `
 
 For now, we'll move the class to another file so it doesn't break our demo.
 
-## Raw String Literals
+## Raw String Literals - 3 or more qoutes
 
 Raw string literals were created to make it easier to have nicely formatted blocks of code from other formats.
 
@@ -137,6 +144,9 @@ var sql =
     WHERE Bar = '{{name}}'
     """"";
 ```
+
+When printed out, all the white space gets trimmed.
+
 
 ## Null Pattern
 
