@@ -51,7 +51,7 @@ Full Power of ASP.NET Core: Despite their simplicity, minimal APIs still provide
     ```bash
     cd ..
     dotnet new sln
-    dotnet sln add ..\JusticeLeague.Api
+    dotnet sln add JusticeLeague.Api
     ```
 
 1. Open the solution in Rider
@@ -283,7 +283,7 @@ We've got a bit of duplication going on at the moment and our minimal APIs aren'
     builder.Services.AddAuthorization();
     ```
 
-1. Create `Infrstructure\Identity\ApplicationDbContext`
+1. Create `Infrastructure\Identity\ApplicationDbContext`
 
     ```csharp
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options);
@@ -338,8 +338,23 @@ We've got a bit of duplication going on at the moment and our minimal APIs aren'
     {
         opt.AddSecurityDefinition("Bearer", securityScheme);
         opt.AddSecurityRequirement(securityReq);
-        opt.AddServer(new OpenApiServer() { Description = "Local", Url = "https://localhost:7140/" });
+        opt.AddServer(new OpenApiServer() { Description = "Local", Url = "https://localhost:5009/" });
     });
+
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        options.HttpsPort = 5009;
+    });
+   
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(5008); // HTTP port
+        options.ListenAnyIP(5009, listenOptions =>
+        {
+            listenOptions.UseHttps();
+        });
+    });
+
     ```
 1. Update the Url above with the URL from the web project
 
