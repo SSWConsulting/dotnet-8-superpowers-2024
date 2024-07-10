@@ -289,7 +289,7 @@ Execute the migration bundle
 
 ```bash
 # NOTE: if an appsettings.json can be found the connection string can be automatically picked up from there
-.\efbundle.exe --connection "Server=.\SQL2022;Database=EfCore8Demo;Trusted_Connection=True;TrustServerCertificate=True;"
+.\efbundle --connection "Server=localhost,1433;Database=EfCore8DemoBundle;User ID=sa;Password=31MySqlServer#;Encrypt=False;"
 ```
 
 Inspect the DB. You'll notice how the tables are now empty. That's because only the migrations are run, and we don't

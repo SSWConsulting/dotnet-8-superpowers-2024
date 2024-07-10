@@ -15,7 +15,7 @@ public class EfCoreTests
         _db = new HeroDbContext();
         _db.Database.EnsureDeleted();
         _db.Database.EnsureCreated();
-        //db.Database.Migrate();
+        //_db.Database.Migrate();
 
         var data = HeroFactory.CreateHeroes();
         _db.Heroes.AddRange(data);
