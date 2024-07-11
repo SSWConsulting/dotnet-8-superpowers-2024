@@ -1,3 +1,0 @@
-# Treat all cs files in this folder as generated code
-[*.cs]
-generated_code = true
