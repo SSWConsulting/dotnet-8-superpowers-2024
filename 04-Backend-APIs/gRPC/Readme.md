@@ -1,9 +1,3 @@
----
-runme:
-  id: 01HGS1DB3SW2F3P042JR5KZQDV
-  version: v2.0
----
-
 # GRPC Hero
 
 ## Grpc Hello World
@@ -126,7 +120,7 @@ dotnet add package Microsoft.AspNetCore.Grpc.JsonTranscoding
 
 3. Add `<IncludeHttpRuleProtos>true</IncludeHttpRuleProtos>` to the property group in the `.csproj` project file:
 
-```xml {"id":"01HGS1DB3SW2F3P042JAS1AE9Q"}
+```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
 <PropertyGroup>

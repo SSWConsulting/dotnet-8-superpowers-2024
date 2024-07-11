@@ -4,7 +4,7 @@ namespace JusticeVoter.Server.Services;
 
 public class HeroService : IHeroService
 {
-    private static readonly string imageBaseUrl = " https://gordonbeemingcom.blob.core.windows.net/dotnetsuperpowers";
+    private static readonly string imageBaseUrl = "https://gordonbeemingcom.blob.core.windows.net/dotnetsuperpowers";
     
     public static List<Hero> Supermen =
     [
