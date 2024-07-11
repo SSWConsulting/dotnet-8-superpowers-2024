@@ -96,7 +96,7 @@ public class Foo2
 }
 ```
 
-Now this removes the warning, but it also means we can set this property anywhere in code (which we often don't want). 
+Now this removes the warning, but it also means we can set this property anywhere in code (which we often don't want).
 
 ```csharp
     var foo = new Foo { Bar = "Bar " };
@@ -129,6 +129,7 @@ var xml = """
           </html>
           """;
 ```
+
 We can also use interpolation with these strings.
 
 We can use any number of quotes to start and end the string, as long as the start and ends match.
@@ -146,7 +147,6 @@ var sql =
 ```
 
 When printed out, all the white space gets trimmed.
-
 
 ## Null Pattern
 
@@ -264,7 +264,7 @@ public class Hero2(string name, int age, string superPower)
 
 This can be especially useful to remove code we'd usually have to deal with dependency injection.
 
-> **NOTE**: Primary Constructors may look similar to records, but they operate quite differently.  With records the params are turned into properties.  With Primary Constructors, they are parameters.
+> **NOTE**: Primary Constructors may look similar to records, but they operate quite differently. With records the params are turned into properties.  With Primary Constructors, they are parameters.
 
 Show how we can't use 'this' to reference the parameters.
 
@@ -317,7 +317,7 @@ List<int> allNumbers = [..lowNumbers, ..highNumbers];
 
 ## Lambda defaults
 
-The last feature we'll look at is lambda defaults.  This is not a huge feature, but may come int hand from time to time.
+The last feature we'll look at is lambda defaults.  This is not a huge feature, but may be handy from time to time.
 
 ```csharp
 var lambda = (int start = 0, int end = 10) => Console.WriteLine("Start: {0}, End: {1}", start, end);

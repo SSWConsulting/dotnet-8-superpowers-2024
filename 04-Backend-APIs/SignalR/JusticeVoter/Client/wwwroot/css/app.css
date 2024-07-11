@@ -64,7 +64,7 @@ a, .btn-link {
     }
 
 .heroCard{
-    max-width: 400px;
+    max-width: 15vw;
 }
 
 .heroCard:hover {
@@ -83,6 +83,12 @@ a, .btn-link {
     transform: translateY(4px);
 }
 
+.chart-container {
+    height: auto;
+    max-height: 50vh;
+}
+
 .chart {
-    max-height: 300px;
+    height: auto;
+    max-height: 50vh;
 }

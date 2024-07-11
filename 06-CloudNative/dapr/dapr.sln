@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaveMe", "SaveMe\SaveMe.csproj", "{BEF42080-6FA8-4774-BB0F-7C7567B7F57C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Producer", "Producer\Producer.csproj", "{BEF42080-6FA8-4774-BB0F-7C7567B7F57C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaveMeListener", "SaveMeListener\SaveMeListener.csproj", "{13B81E89-7E0C-4F9A-ABAE-23E1E52B2A01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factory", "Factory\Factory.csproj", "{13B81E89-7E0C-4F9A-ABAE-23E1E52B2A01}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{2BBA8AFC-C4DB-4F2B-A1D9-C1ED97582E13}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,6 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9C0EF4
 		dapr.yaml = dapr.yaml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}"
+EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +34,10 @@ Global
 		{13B81E89-7E0C-4F9A-ABAE-23E1E52B2A01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13B81E89-7E0C-4F9A-ABAE-23E1E52B2A01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13B81E89-7E0C-4F9A-ABAE-23E1E52B2A01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
