@@ -3,11 +3,11 @@
 Minimal APIs in ASP.NET Core are a streamlined way of building HTTP APIs with minimal overhead and ceremony. They provide a simpler and more concise way to define and configure HTTP endpoints, focusing on reducing boilerplate code and enhancing developer productivity, especially for small-to-medium-sized APIs.
 
 Key Features of Minimal APIs
-Simplicity: Minimal APIs are designed to be straightforward and easy to understand, using fewer lines of code to accomplish tasks.
-Reduced Boilerplate: Minimal APIs eliminate much of the boilerplate code associated with traditional ASP.NET Core projects, such as controllers, attributes, and extensive configuration.
-Endpoint Mapping: Define routes and endpoints directly in the Program.cs file, streamlining the routing setup.
-Lightweight: They are ideal for microservices, serverless functions, and small applications where the overhead of the full ASP.NET Core MVC framework is unnecessary.
-Full Power of ASP.NET Core: Despite their simplicity, minimal APIs still provide access to the full power of ASP.NET Core, including dependency injection, middleware, and configuration.
+**Simplicity**: Minimal APIs are designed to be straightforward and easy to understand, using fewer lines of code to accomplish tasks.
+**Reduced Boilerplate**: Minimal APIs eliminate much of the boilerplate code associated with traditional ASP.NET Core projects, such as controllers, attributes, and extensive configuration.
+**Endpoint Mapping**: Define routes and endpoints directly in the Program.cs file, streamlining the routing setup.
+**Lightweight**: They are ideal for microservices, serverless functions, and small applications where the overhead of the full ASP.NET Core MVC framework is unnecessary.
+**Full Power of ASP.NET Core**: Despite their simplicity, minimal APIs still provide access to the full power of ASP.NET Core, including dependency injection, middleware, and configuration.
 
 ## Project Setup
 
@@ -363,6 +363,11 @@ We've got a bit of duplication going on at the moment and our minimal APIs aren'
     ```csharp
     app.MapGroup("account").WithTags("Account").MapIdentityApi<ApplicationUser>();
     ```
+
+Tell it to use HTTPS
+```csharp
+    app.UseHttpsRedirection();
+```
 
 1. Add Authentication to our HeroEndpoints
 

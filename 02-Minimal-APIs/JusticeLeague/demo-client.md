@@ -25,12 +25,13 @@
 
     ```bash
     cd ..
-    dotnet sln add .\JusticeLeague.Client
+    dotnet sln add JusticeLeague.Client
     ```
    
 1. Add the Kiota nuget packages
 
     ```bash
+    cd JusticeLeague.Client
     dotnet add package Microsoft.Kiota.Abstractions
     dotnet add package Microsoft.Kiota.Http.HttpClientLibrary
     dotnet add package Microsoft.Kiota.Serialization.Form
@@ -44,7 +45,7 @@
 1. Generate the full client code using Kiota
 
     ```bash
-    dotnet kiota generate -l CSharp -c HeroesClient -n JusticeLeague.Client --openapi "..\JusticeLeague.Api\wwwroot\swagger.json" -o .\Client 
+    dotnet kiota generate -l CSharp -c HeroesClient -n JusticeLeague.Client --openapi "../JusticeLeague.Api/wwwroot/swagger.json" -o Client 
     ```
 
     See how much code is generated
@@ -53,9 +54,11 @@
 1. Generate the client code using Kiota CLI
 
     ```bash
-    dotnet kiota generate --include-path **/heroes --include-path **/login --include-path **/register -l CSharp -c HeroesClient -n JusticeLeague.Client --openapi "..\JusticeLeague.Api\wwwroot\swagger.json" -o ./Client --clean-output
+    dotnet kiota generate -l CSharp -c HeroesClient -n JusticeLeague.Client --openapi "../JusticeLeague.Api/wwwroot/swagger.js
+on" -o Client --include-path /api/heroes --include-path  /account/login --include-path /account/register  --clean-output
     ```
-   
+
+
     Now look at the code generated and see the size difference
 
 1. Add the .net microsoft host nuget package
@@ -91,7 +94,7 @@
  
 ## Authentication
   
-   We'll use this to store the configuration for out API
+   We'll use this to store the configuration for our API
 
 1. Try to manually create and use the `HeroClient`.  Show how many classes we need to instantiate in order to set this up.
 
@@ -193,7 +196,7 @@
     {
       "Api": {
         "Url": "http://localhost:7140/",
-        "UserName": "dan@ssw.com",
+        "UserName": "gert@ssw.com",
         "Password": "Password1?"
       }
     }
@@ -220,10 +223,10 @@
 
     ```csharp
     var secureClient = app.Services.GetRequiredKeyedService<HeroesClient>(HeroClientTypes.Secure);
-    var heroes = await secureClient.Heroes.GetAsync();
+    var heroes = await secureClient.Api.Heroes.GetAsync();
     foreach (var hero in heroes)
     {
-        Console.WriteLine($"Hero - {hero.HeroName} ({hero.CivillianName})");
+        Console.WriteLine($"Hero - {hero.HeroName} ({hero.CivilianName})");
     }
     
     Console.ReadKey();
