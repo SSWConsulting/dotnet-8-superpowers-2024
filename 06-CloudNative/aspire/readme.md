@@ -22,6 +22,16 @@ dotnet workload update aspire
    3. Traces
    4. Metrics
 
+Using the CLI:
+
+```ps1
+dotnet new aspire-apphost -o AppHost --force
+dotnet sln .\dapr.sln add .\AppHost\AppHost.csproj
+
+dotnet new aspire-servicedefaults -o ServiceDefaults --force
+dotnet sln .\dapr.sln add .\ServiceDefaults\ServiceDefaults.csproj
+
+```
 
 ## Deploying Aspire app to Azure
 
@@ -34,7 +44,6 @@ winget install Microsoft.Azd
 winget uninstall Microsoft.Azd
 winget upgrade Microsoft.Azd
 ```
-
 
 ### Generate the Manifest
 

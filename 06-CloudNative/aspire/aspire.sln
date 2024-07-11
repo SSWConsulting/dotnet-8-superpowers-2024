@@ -7,17 +7,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Producer", "Producer\Produc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Factory", "Factory\Factory.csproj", "{13B81E89-7E0C-4F9A-ABAE-23E1E52B2A01}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{2BBA8AFC-C4DB-4F2B-A1D9-C1ED97582E13}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DaprComponents", "DaprComponents", "{2BBA8AFC-C4DB-4F2B-A1D9-C1ED97582E13}"
 	ProjectSection(SolutionItems) = preProject
 		DaprComponents\pubsub.yaml = DaprComponents\pubsub.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9C0EF40D-CEBA-4F3A-9F56-1EA0851D891A}"
 	ProjectSection(SolutionItems) = preProject
-		dapr.yaml = dapr.yaml
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppHost", "AppHost\AppHost.csproj", "{54990BB4-CB9A-471A-864A-F4B7D53ED7F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceDefaults", "ServiceDefaults\ServiceDefaults.csproj", "{CCCBA787-D103-4001-88C6-773880B91CE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,14 @@ Global
 		{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BD89E81-51BC-4C83-B7DB-850CF72D1E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54990BB4-CB9A-471A-864A-F4B7D53ED7F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54990BB4-CB9A-471A-864A-F4B7D53ED7F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54990BB4-CB9A-471A-864A-F4B7D53ED7F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54990BB4-CB9A-471A-864A-F4B7D53ED7F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCCBA787-D103-4001-88C6-773880B91CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCCBA787-D103-4001-88C6-773880B91CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCCBA787-D103-4001-88C6-773880B91CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCCBA787-D103-4001-88C6-773880B91CE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

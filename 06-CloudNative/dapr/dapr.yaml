@@ -7,14 +7,14 @@ common: # optional section for variables shared across apps
   env:  # any environment variable shared across apps
     DEBUG: true
 apps:
-  - appID: save-me-api
-    appDirPath: ./SaveMe/
+  - appID: producer-api
+    appDirPath: ./Producer/
     appPort: 7150
     daprHTTPPort: 3500
-    command: ["dotnet", "run", "SaveMe.csproj", "-lp", "https"]
-  - appID: save-me-listener-api
-    appDirPath: ./SaveMeListener/
+    command: ["dotnet", "run", "Producer.csproj", "-lp", "https"]
+  - appID: factory-api
+    appDirPath: ./Factory/
     appPort: 7264
     daprHTTPPort: 3501
-    command: ["dotnet", "run", "SaveMeListener.csproj", "-lp", "https"]
+    command: ["dotnet", "run", "Factory.csproj", "-lp", "https"]
   

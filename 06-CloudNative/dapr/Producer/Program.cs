@@ -1,9 +1,9 @@
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 
-var builder = WebApplication.CreateBuilder(args);
+using Shared;
 
-//builder.AddServiceDefaults();
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,14 +27,20 @@ app.MapSubscribeHandler();
 app.UseHttpsRedirection();
 
 
-app.MapPost("/save-me", async (
-    [FromBody] RequestForHelp item, 
+app.MapPost("/produce", async (
+    [FromBody] ProduceItemRequest item,
     [FromServices] DaprClient client) =>
 {
     try
     {
-        Console.WriteLine($"{item.Name} is asking for help... ill let the heroes know!");
-        await client.PublishEventAsync("hero-pubsub", "need.help", item);
+        Console.WriteLine($"Request received to produce {item.Quantity}x {item.Name}" + (item.Quantity > 1 ? "s" : ""));
+        
+        for(int j = 0; j < item.Quantity; j++)
+        {
+            var msg = new ProduceItemMessage(item.Name, DateTime.Now);
+            await client.PublishEventAsync("factory-pubsub", "item-queue", item);
+        }
+
         return Results.Ok();
     }
     catch (Exception ex)
@@ -42,11 +48,8 @@ app.MapPost("/save-me", async (
         return Results.BadRequest(ex);
     }
 })
-.WithName("SaveMe")
+.WithName("Produce")
 .WithOpenApi();
-
-//app.MapDefaultEndpoints();
 
 app.Run();
 
-internal record RequestForHelp(string Name);
