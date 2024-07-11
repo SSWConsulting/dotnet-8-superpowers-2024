@@ -1,228 +1,307 @@
-# Hero Jobs - Unit & Integration Testing Demo
+# Testing
 
-Demo of unit and integration tests.  Originally created from the SSW CA template - https://github.com/SSWConsulting/SSW.CleanArchitecture
+Demo of new .NET 8 testing features
 
 ## Pre-requisites
 
-- WSL2
-- Docker Desktop
 - .NET 8
 
-## Project Structure
 
-- Run through functionality
-- Brief overview of project structure
 
-## Unit Tests
+# Simplified Test Project Configuration in .NET 8 and Streamlined Logging Integration
 
-- Show `HeroJobTests`
-- Show `HeroJobByTitleSpecTests`
+Built-in Configuration and Dependency Injection Improvements:
 
-## Integration Tests
+.NET 8 continues to enhance the built-in configuration and DI mechanisms, making them more intuitive and easier to use.
+Integration of TimeProvider and other new abstractions simplify common patterns like time management in tests.
 
-- Show `CreateHeroJobEndpointTests`
-- Show Rider Dependency Diagram for base types
-- Walk through base type code
-- Show tests running
-- Pause tests and connect to DB container
+Enhanced Environment Configuration:
 
-## Logging Tests
+Better support for environment-specific configurations, which is crucial for running tests in different environments (e.g., development, staging, production).
+Improved support for environment variable overrides and configuration providers.
 
-Create the `Application.UnitTests` project
+Streamlined Logging Integration:
+
+Enhanced logging setup with more straightforward configuration using the built-in logging providers.
+Improved logging output formatting and capabilities, making it easier to capture and understand log data during test runs.
+
+Unified Dependency Injection Experience:
+
+Continued improvements in the DI system, making it easier to register and resolve dependencies, including in test scenarios.
+Better integration with test frameworks like xUnit, NUnit, and MSTest, making it simpler to set up and use DI in tests.
+
+## Setup 
+
+To create the project from scratch:
 
 ```bash
-cd Tests
-dotnet new xunit -n Application.UnitTests
-cd Application.UnitTests
-dotnet add reference ../src/Application
+dotnet new xunit -o SimplifiedConfigTestProject
+cd SimplifiedConfigTestProject
 ```
 
-Add the testing package to the `Test` project
+
+Run the following to install test packages 
 
 ```bash
-dotnet add package Microsoft.Extensions.Diagnostics.Testing
-````
-
-Add NSubstitute to the testing project
-
-```bash
-dotnet add package NSubstitute
+dotnet add package xunit
+dotnet add package xunit.runner.visualstudio
+dotnet add package Microsoft.Extensions.Configuration
+dotnet add package Microsoft.Extensions.Configuration.Json
+dotnet add package Microsoft.Extensions.DependencyInjection
+dotnet add package Microsoft.Extensions.Logging
+dotnet add package Microsoft.Extensions.Options.ConfigurationExtensions
+dotnet add package Microsoft.Extensions.Logging.Console
 ```
 
-Add fluent assertions to the testing project
+Delete the default unit test
 
-```bash
-dotnet add package FluentAssertions
-```
 
-Add logging to `CompleteHeroJobCommandHandler`
 
-```csharp
-// updated 👇
-public class CompleteHeroJobCommandHandler(IApplicationDbContext dbContext, ILogger<CompleteHeroJobCommandHandler> logger) : IRequestHandler<CompleteHeroJobCommand>
-// updated 👆
+## Configure Environment-Specific Settings
+
+Create appsettings.json, appsettings.Development.json, and appsettings.Production.json files in your test project directory.
+
+Copy the following into each of the respective files:
+
+appsettings.json
+```json
 {
-    public async Task Handle(CompleteHeroJobCommand request, CancellationToken cancellationToken)
-    {
-        // added 👇
-        logger.LogInformation("completing job {HeroJobId}", request.HeroJobId);
-        // added 👆
-
-        var heroJobId = new HeroJobId(request.HeroJobId);
-
-        var heroJob = await dbContext.HeroJobs
-            .WithSpecification(new HeroJobByIdSpec(heroJobId))
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (heroJob is null)
-            throw new NotFoundException(nameof(heroJob), heroJobId);
-
-        // added 👇
-        if (heroJob.Done)
-        {
-            logger.LogWarning("job {HeroJobId} is already completed", request.HeroJobId);
-        }
-        else
-        {
-            heroJob.Complete();
-        }
-        // added 👆
-
-        await dbContext.SaveChangesAsync(cancellationToken);
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning"
     }
+  },
+  "AppSettings": {
+    "ApiBaseUrl": "https://api.example.com"
+  }
 }
 ```
 
-Create an in-memory EF Core provider
-
-```csharp
-public static class ApplicationDbContextFactory
+appsettings.Development.json
+```json
 {
-    public static ApplicationDbContext CreateInMemory()
-    {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-
-        var currentUserService = Substitute.For<ICurrentUserService>();
-        var dateTime = Substitute.For<IDateTime>();
-        var mediator = Substitute.For<IMediator>();
-        var entitySaveChangesInterceptor = new EntitySaveChangesInterceptor(currentUserService, dateTime);
-        var dispatchDomainEventsInterceptor = new DispatchDomainEventsInterceptor(mediator);
-        var dbContext =
-            new ApplicationDbContext(options, entitySaveChangesInterceptor, dispatchDomainEventsInterceptor);
-
-        dbContext.Database.EnsureCreated();
-
-        return dbContext;
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft": "Information"
     }
+  },
+  "AppSettings": {
+    "ApiBaseUrl": "https://dev.api.example.com"
+  }
 }
 ```
 
+appsettings.Production.json
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Error",
+      "Microsoft": "Critical"
+    }
+  },
+  "AppSettings": {
+    "ApiBaseUrl": "https://prod.api.example.com"
+  }
+}
+```
 
-Create the tests `Features/HeroJobs/CompleteHeroJobCommandTests.cs`
+Remember to set each file to be written to the output directory
+
+
+## Use Configuration Files in Tests
+
+Create a TestBase.cs file in the test project. 
+
+
+TestBase.cs
+```csharp
+
+public class TestBase
+{
+    protected readonly IConfiguration Configuration;
+    protected readonly IServiceProvider ServiceProvider;
+    protected readonly ILogger Logger;
+
+    public TestBase()
+    {
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
+        var configurationBuilder = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
+
+        Configuration = configurationBuilder.Build();
+
+        var serviceCollection = new ServiceCollection();
+        ConfigureServices(serviceCollection);
+
+        ServiceProvider = serviceCollection.BuildServiceProvider();
+        Logger = ServiceProvider.GetRequiredService<ILogger<TestBase>>();
+    }
+
+    private void ConfigureServices(IServiceCollection services)
+    {
+        services.AddLogging(configure => configure.AddConsole())
+                .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Information);
+
+        // Register other services and configurations
+        services.AddSingleton(Configuration);
+        services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+    }
+}
+
+public class AppSettings
+{
+    public string ApiBaseUrl { get; set; }
+}
+
+```
+
+Explain what is happening in the file
+
+## Write a Test Using the Configuration
+Create a ExampleTests.cs file in the test project
 
 ```csharp
-public class CompleteHeroJobCommandTests : IDisposable, IAsyncDisposable
+
+public class ExampleTests : TestBase
 {
-    private readonly ApplicationDbContext _dbContext = ApplicationDbContextFactory.CreateInMemory();
+    private readonly IOptions<AppSettings> _appSettings;
+
+    public ExampleTests()
+    {
+        _appSettings = ServiceProvider.GetService<IOptions<AppSettings>>();
+    }
 
     [Fact]
-    public async Task Handle_WithNewJob_LogsInfo()
+    public void Test_ApiBaseUrl_IsConfiguredCorrectly()
     {
-        // Arrange
-        var job = HeroJob.Create("Save Gotham");
-        _dbContext.Add(job);
-        await _dbContext.SaveChangesAsync();
-        var logger = new FakeLogger<CompleteHeroJobCommandHandler>();
-        var sut = new CompleteHeroJobCommandHandler(_dbContext, logger);
+        var apiBaseUrl = _appSettings.Value.ApiBaseUrl;
 
-        // Act
-        await sut.Handle(new CompleteHeroJobCommand(job.Id.Value), CancellationToken.None);
+        Logger.LogInformation("ApiBaseUrl: {ApiBaseUrl}", apiBaseUrl);
 
         // Assert
-        logger.Collector.Count.Should().Be(1);
-        logger.Collector.GetSnapshot().First().Message.Should().StartWith("completing job");
-    }
-
-    [Fact]
-    public async Task Handle_WithCompletedJob_ShouldLogWarning()
-    {
-        // Arrange
-        var job = HeroJob.Create("Save Gotham");
-        job.Complete();
-        _dbContext.Add(job);
-        await _dbContext.SaveChangesAsync();
-        var logger = new FakeLogger<CompleteHeroJobCommandHandler>();
-        var sut = new CompleteHeroJobCommandHandler(_dbContext, logger);
-
-        // Act
-        await sut.Handle(new CompleteHeroJobCommand(job.Id.Value), CancellationToken.None);
-
-        // Assert
-        logger.Collector.Count.Should().Be(2);
-        logger.Collector.GetSnapshot()[0].Message.Should().StartWith("completing job");
-        logger.Collector.GetSnapshot()[1].Level.Should().Be(LogLevel.Warning);
-        logger.Collector.GetSnapshot()[1].Message.Should().Contain("already completed");
-    }
-
-    public void Dispose()
-    {
-        _dbContext.Dispose();
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await _dbContext.DisposeAsync();
+        Assert.NotNull(apiBaseUrl);
+        Assert.Contains("api.example.com", apiBaseUrl);
     }
 }
+
 ```
 
-> **NOTE**: the logger will contain a collection of all the logs that have been added during execution
+Debug the test in console. 
 
-Run the tests and show them working
-
-## Time Tests
-
-Update the `HeroJob` so that we can check with a job is 'due'
-
-```csharp
-public bool IsReminderDue(TimeProvider timeProvider)
-{
-    return Reminder <= timeProvider.GetUtcNow();
-}
-```
-
-Add the following packages to the `Test` project
+First test showing test using Development appsettings
 
 ```bash
+export ASPNETCORE_ENVIRONMENT=Development
+dotnet test
+```
+
+Second test showing test using Production appsettings
+
+```bash
+export ASPNETCORE_ENVIRONMENT=Production
+dotnet test
+```
+
+
+# TimeProvider
+
+TimeProvider is an abstract base class introduced in .NET 8 that provides a standard way to access time-related information.
+
+Key Features:
+
+**Standardization**: TimeProvider provides a unified approach to accessing time-related information, reducing the need for various custom implementations scattered across the codebase.
+**Testability**: By using a TimeProvider, time-dependent code can be easily tested. Developers can inject mock or custom implementations of TimeProvider to simulate different times and durations in unit tests.
+**Flexibility**: TimeProvider can be extended to create custom time providers that suit specific needs, such as simulating time in different time zones or providing consistent time sources in distributed systems.
+**Separation of Concerns**: It separates the concerns of obtaining the current time from business logic, making the code cleaner and more maintainable.
+
+Explain why using DateTime in testing is a big task:
+
+1. Create ITimeService interface
+2. Implementation of it, say SystemTimeInterface
+3. Create a TimeService using implementation
+4. Create a Mock of the Time Service
+5. Use the Mock in your tests
+
+Now, show how simple it is with TimeProvider in .NET 9 and using the FaketimeProvider
+
+```bash
+dotnet new xunit -o TimeProviderTestProject
+cd TimeProviderTestProject
+```
+
+```bash
+dotnet add package xunit
+dotnet add package xunit.runner.visualstudio
 dotnet add package Microsoft.Extensions.TimeProvider.Testing
 ```
 
-Create the tests in `Domain.UnitTests` in the existing `HeroJobTests` file
+Create a Services\TimeService.cs class and copy over the following code
 
 ```csharp
-[Fact]
-public void IsReminderDue_WhenReminderHasNotPast_ReturnsFalse()
+public class TimeService
 {
-    // Arrange
-    var now = DateTime.UtcNow;
-    var reminder = now.AddDays(1);
-    var timeProvider = new FakeTimeProvider();
-    timeProvider.SetUtcNow(now);
-    var sut = HeroJob.Create("title", "note", PriorityLevel.High, reminder);
+    private readonly TimeProvider _timeProvider;
 
-    // Act
-    var result = sut.IsReminderDue(timeProvider);
+    public TimeService(TimeProvider timeProvider)
+    {
+        _timeProvider = timeProvider;
+    }
 
-    // Assert
-    result.Should().BeFalse();
+    public DateTime GetCurrentTime()
+    {
+        return _timeProvider.GetUtcNow().DateTime;
+    }
 
-    // NOTE: Not ideal to test two different things at once, but this is a simple way to show how the time provider works
-    timeProvider.Advance(TimeSpan.FromDays(1));
-    result = sut.IsReminderDue(timeProvider);
-    result.Should().BeTrue();
+    public DateOnly GetCurrentDate()
+    {
+        return DateOnly.FromDateTime(_timeProvider.GetUtcNow().DateTime);
+    }
 }
 ```
 
-Run the tests and show they pass
+Explain how we did step 1-3 in one
+
+Next, create a test using FakeTimeProvider
+
+Create class Tests\TimeServiceTests.cs and copy over the following code:
+
+```csharp 
+public class TimeServiceTests
+{
+    [Fact]
+    public void GetCurrentTime_ReturnsMockedTime()
+    {
+        // Arrange
+        var fakeTimeProvider = new FakeTimeProvider(new DateTimeOffset(new DateTime(2023, 1, 1)));
+        var timeService = new TimeService(fakeTimeProvider);
+
+        // Act
+        var currentTime = timeService.GetCurrentTime();
+
+        // Assert
+        Assert.Equal(new DateTime(2023, 1, 1), currentTime);
+    }
+
+    [Fact]
+    public void GetCurrentDate_ReturnsMockedDate()
+    {
+        // Arrange
+        var fakeTimeProvider = new FakeTimeProvider(new DateTimeOffset(new DateTime(2023, 1, 1)));
+        var timeService = new TimeService(fakeTimeProvider);
+
+        // Act
+        var currentDate = timeService.GetCurrentDate();
+
+        // Assert
+        Assert.Equal(new DateOnly(2023, 1, 1), currentDate);
+    }
+}
+```
+
+Show how simple it is and that we did the last 2 steps in one, which results in 2 steps to use time for testing.

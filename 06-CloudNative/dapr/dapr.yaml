@@ -17,4 +17,3 @@ apps:
     appPort: 7264
     daprHTTPPort: 3501
     command: ["dotnet", "run", "Factory.csproj", "-lp", "https"]
-  
