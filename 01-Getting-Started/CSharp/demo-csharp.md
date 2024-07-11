@@ -66,7 +66,7 @@ var p2 = p1 with { FirstName = "Fred" };
 We also get value based equality
 
 ```csharp
-var doppleGanger = new Person("Daniel", "Mackay");
+var doppleGanger = new Person("Gert", "Marx");
 if (p1 == doppleGanger) 
 {
     Console.WriteLine("equal")'
