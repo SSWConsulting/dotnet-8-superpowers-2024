@@ -1,0 +1,4 @@
+2024-07-12 10:12:20.969 +10:00 [INF] A Citizen needs help!
+2024-07-12 10:12:25.008 +10:00 [WRN] Superman is not free.
+2024-07-12 10:12:27.012 +10:00 [WRN] Batman is not free.
+2024-07-12 10:12:29.014 +10:00 [WRN] Wonderwoman is not free.

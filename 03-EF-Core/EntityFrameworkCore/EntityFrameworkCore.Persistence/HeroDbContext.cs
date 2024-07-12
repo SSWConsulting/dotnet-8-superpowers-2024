@@ -18,6 +18,7 @@ public class HeroDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-       
+        var entity = modelBuilder.Entity<Hero>();
+        entity.HasIndex(e => e.AffiliationId);
     }
 }

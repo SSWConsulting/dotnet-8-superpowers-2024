@@ -1,10 +1,14 @@
-﻿namespace EntityFrameworkCore.Console;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace EntityFrameworkCore.Console;
 
 public class Hero
 {
     public int HeroId { get; set; }
     public string Name { get; set; }
     public string Alias { get; set; }
+    
+    public DateOnly? LastSavedTheCity { get; set; }
 
     public int? AffiliationId { get; set; }
     public Affiliation Affiliation { get; set; }
